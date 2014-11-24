@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Links</title>
+   <% include partials/head %>
+</head>
+<body>
+   <form action="/" method="POST" id="add-link">
+      <input type="url" name="url" placeholder="URL">
+      <input type="text" name="name" placeholder="Name">
+      <select name="category">
+         <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.category_id %>"><%= cat.name %></option>
+         <% }); %>
+      </select>
+      <button>Submit</button>
+   </form>
+
+   <ul id="links">
+      <% links.forEach(function(link) { %>
+         <li><a href="<%= link.url %>"><%= link.name %></a></li>
+      <% }); %>
+   </ul>
+</body>
+</html>
