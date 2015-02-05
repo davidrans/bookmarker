@@ -8,12 +8,13 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var session = require('express-session');
 
-var routes = require('./routes/index');
+//var routes = require('./routes/index');
 
 var db       = require('./lib/db');
 var passport = require('passport');
 var flash    = require('connect-flash');
 
+require('./config/passport')(passport); // pass passport for configuration
 
 var app = express();
 
@@ -33,9 +34,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-app.use('/', routes);
+//app.use('/', routes);
+require('./routes/index')(app, passport);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

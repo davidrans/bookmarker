@@ -42,7 +42,7 @@ Category.getAll = function() {
    var q = 'SELECT * FROM `categories`';
 
    var cats = [];
-   return db.query(q, name).then(function(rows) {
+   return db.query(q).then(function(rows) {
       if (!rows.length) { return []; }
 
       rows.forEach(function(row) {

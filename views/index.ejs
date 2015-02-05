@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Links</title>
+   <title>Bookmarker</title>
    <% include partials/head %>
+   <script src="/js/index.js"></script>
 </head>
 <body>
+   <% include partials/header %>
    <form action="/" method="POST" id="add-link">
       <input type="url" name="url" placeholder="URL">
       <input type="text" name="name" placeholder="Name">
@@ -13,6 +15,15 @@
             <option value="<%= cat.category_id %>"><%= cat.name %></option>
          <% }); %>
       </select>
+      <br>
+      <select id="privacy">
+         <option value="public" selected>Public</option>
+         <option value="private">Private</option>
+      </select>
+      <div id="user-search" style="display: none">
+         <input type="text">
+         <ul id="user-list" style="display: inline-block"></ul>
+      </div>
       <button>Submit</button>
    </form>
 
