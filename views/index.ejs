@@ -7,30 +7,11 @@
 </head>
 <body>
    <% include partials/header %>
-   <% include partials/create-post %>
-   <!--<form action="/" method="POST" id="add-link">
-      <input type="url" name="url" placeholder="URL">
-      <input type="text" name="name" placeholder="Name">
-      <select name="category">
-         <% categories.forEach(function(cat) { %>
-            <option value="<%= cat.category_id %>"><%= cat.name %></option>
-         <% }); %>
-      </select>
-      <br>
-      <select id="privacy">
-         <option value="public" selected>Public</option>
-         <option value="private">Private</option>
-      </select>
-      <div id="user-search" style="display: none">
-         <input type="text">
-         <ul id="user-list" style="display: inline-block"></ul>
-      </div>
-      <button>Submit</button>
-   </form>
 
-   <ul id="links">-->
-      <% links.forEach(function(link) { %>
-         <% include partials/post %>
-      <% }); %>
+   <% include partials/create-post %>
+
+   <% links.forEach(function(link) { %>
+      <% include partials/post %>
+   <% }); %>
 </body>
 </html>

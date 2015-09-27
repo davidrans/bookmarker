@@ -5,10 +5,15 @@
       </span>
    </div>
 
-   <div class="post-form" style="display: none">
+   <form class="post-form" style="display: none">
       <input name="url" placeholder="URL (https://legendary-abs.com)" type="url">
-      <input name="title" placeholder="Title (Legendary Abs)" type="text">
-      <textarea name="description" placeholder="Description (Awesome Workout Website)"></textarea>
-      <input class="post-submit" type="button" value="Submit"></input>
-   </div>
+      <input name="name" placeholder="Title (Legendary Abs)" type="text">
+      <select name="category">
+         <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.category_id %>"><%= cat.name %></option>
+         <% }); %>
+      </select>
+<!--      <textarea name="description" placeholder="Description (Awesome Workout Website)"></textarea>-->
+      <input class="post-submit" type="submit" value="Submit"></input>
+   </form>
 </div>

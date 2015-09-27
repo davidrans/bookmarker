@@ -11,7 +11,7 @@ var session = require('express-session');
 //var routes = require('./routes/index');
 
 var db       = require('./lib/db');
-var config   = require('../config');
+var config   = require('/config');
 var passport = require('passport');
 var flash    = require('connect-flash');
 

@@ -45,7 +45,9 @@ a {
    margin-bottom: 20px;
 }
 
-.create-post input, .create-post textarea {
+.create-post input,
+.create-post textarea,
+.create-post select {
    display: block;
    margin: 10px auto;
    width: 80%;
@@ -56,6 +58,7 @@ a {
    text-align: center;
    cursor: pointer;
    text-transform: uppercase;
+   background-color: #8add6d;
 }
 
 .post-link {

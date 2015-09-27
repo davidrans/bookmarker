@@ -26,7 +26,11 @@ Link.prototype.save = function() {
 };
 
 Link.getAll = function() {
-   return db.query('SELECT * FROM `links`');
+   var q =
+      'SELECT * FROM `links` ' +
+      'ORDER BY `link_id` DESC';
+
+   return db.query(q);
 };
 
 Link.getByCategory = function(category_id) {

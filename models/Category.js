@@ -1,7 +1,8 @@
 var db = require('../lib/db');
 
-var Category = function(name) {
+var Category = function(name, id) {
    this.name = name;
+   this.category_id = id;
 };
 
 Category.prototype.save = function() {

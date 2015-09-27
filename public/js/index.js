@@ -4,9 +4,12 @@ $(function() {
       $('.post-form').show();
    });
 
-   $('.post-submit').click(function(e) {
-      var data = $('.post input, .post textarea').serializeArray();
-      //$.post('/', data);
+   $('.post-form').submit(function(e) {
+      var data = $(this).serializeArray();
+      $.post('/', data);
+      $(this).hide();
+      $('.post-banner').show();
+      e.preventDefault();
    });
 
    $('#privacy').change(function(e) {

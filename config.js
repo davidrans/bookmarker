@@ -4,5 +4,9 @@ module.exports = {
       db: 'bookmarker',
       user: 'david',
       pass: 'asdf'
+   },
+
+   passport: {
+      secret: 'super secret key'
    }
 };

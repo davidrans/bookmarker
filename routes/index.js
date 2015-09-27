@@ -7,7 +7,7 @@ var User = require('../models/User');
 module.exports = function(app, passport) {
 
 /* GET home page. */
-app.get('/', isLoggedIn, function(req, res) {
+app.get('/', /*isLoggedIn,*/ function(req, res) {
    var links = Link.getAll();
    var categories = Category.getAll();
 
@@ -41,7 +41,7 @@ app.get('/login', function(req, res) {
 });
 
 app.post('/login', passport.authenticate('local-login', {
-   successRedirect : '/profile',
+   successRedirect : '/',
    failureRedirect : '/login',
    failureFlash : true
 }));
