@@ -7,7 +7,7 @@ var User = require('../models/User');
 module.exports = function(app, passport) {
 
 /* GET home page. */
-app.get('/', /*isLoggedIn,*/ function(req, res) {
+app.get('/', isLoggedIn, function(req, res) {
    var links = Link.getAll();
    var categories = Category.getAll();
 
@@ -30,7 +30,7 @@ app.get('/signup', function(req, res) {
 });
 
 app.post('/signup', passport.authenticate('local-signup', {
-   successRedirect : '/profile', // redirect to the secure profile section
+   successRedirect : '/',
    failureRedirect : '/signup', // redirect back to the signup page if there is an error
    failureFlash : true // allow flash messages
 }));
