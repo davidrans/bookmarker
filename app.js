@@ -11,6 +11,7 @@ var session = require('express-session');
 //var routes = require('./routes/index');
 
 var db       = require('./lib/db');
+var config   = require('../config');
 var passport = require('passport');
 var flash    = require('connect-flash');
 
@@ -31,7 +32,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(session({ secret: config.passport.secret })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
