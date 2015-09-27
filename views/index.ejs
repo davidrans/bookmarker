@@ -26,12 +26,11 @@
          <ul id="user-list" style="display: inline-block"></ul>
       </div>
       <button>Submit</button>
-   </form>-->
+   </form>
 
-   <ul id="links">
+   <ul id="links">-->
       <% links.forEach(function(link) { %>
-         <li><a href="<%= link.url %>"><%= link.name %></a></li>
+         <% include partials/post %>
       <% }); %>
-   </ul>
 </body>
 </html>

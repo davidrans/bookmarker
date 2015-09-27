@@ -38,13 +38,13 @@ a {
    text-align: right;
 }
 
-/* POST FORM */
-.post {
+/* CREATE POST */
+.create-post {
    border: 1px solid black;
    margin-bottom: 20px;
 }
 
-.post input, .post textarea {
+.create-post input, .create-post textarea {
    display: block;
    margin: 10px auto;
    width: 80%;
@@ -59,4 +59,15 @@ a {
 
 .post-link {
    font-size: 28px;
+}
+
+/* POST */
+.post {
+   border: 1px solid black;
+   padding: 10px;
+   margin-bottom: 20px;
+}
+
+.post .title {
+   text-align: center;
 }
