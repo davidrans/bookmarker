@@ -1,9 +1,12 @@
 $(function() {
-   $('#add-link').submit(function(e) {
-      var data = $(this).serializeArray();
-      $.post('/', data);
-      $('input').val('');
-      return false;
+   $('.post-banner').click(function() {
+      $(this).hide();
+      $('.post-form').show();
+   });
+
+   $('.post-submit').click(function(e) {
+      var data = $('.post input, .post textarea').serializeArray();
+      //$.post('/', data);
    });
 
    $('#privacy').change(function(e) {

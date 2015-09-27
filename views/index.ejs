@@ -7,7 +7,8 @@
 </head>
 <body>
    <% include partials/header %>
-   <form action="/" method="POST" id="add-link">
+   <% include partials/create-post %>
+   <!--<form action="/" method="POST" id="add-link">
       <input type="url" name="url" placeholder="URL">
       <input type="text" name="name" placeholder="Name">
       <select name="category">
@@ -25,7 +26,7 @@
          <ul id="user-list" style="display: inline-block"></ul>
       </div>
       <button>Submit</button>
-   </form>
+   </form>-->
 
    <ul id="links">
       <% links.forEach(function(link) { %>
