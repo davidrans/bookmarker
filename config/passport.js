@@ -2,6 +2,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 
 // load up the user model
 var User            = require('../models/User');
+var Invite          = require('../models/Invite');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -33,6 +34,8 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
+        var inviteExists = Invite.exists(req.body.email, req.body.code);
+
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
@@ -48,11 +51,17 @@ module.exports = function(passport) {
                 // create the user
                 var newUser = new User(email, User.generateHash(password));
 
-                // save the user
-                newUser.save().done(function() {
-                    return done(null, newUser);
-                }, function(err) {
-                    throw err;
+                inviteExists.done(function(exists) {
+                   if (!exists) {
+                      return done(null, false, req.flash('signupMessage', 'That email was not invited.'));
+                   }
+
+                   // save the user
+                   newUser.save().done(function() {
+                       return done(null, newUser);
+                   }, function(err) {
+                       throw err;
+                   });
                 });
             }
 
