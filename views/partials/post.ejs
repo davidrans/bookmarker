@@ -1,8 +1,11 @@
 <div class="post">
    <p class="title">
-      <a href="<%= link.url %>"><%= link.name %></a>
+      <a href="<%= link.url %>" target="_blank"><%= link.name %></a>
    </p>
    <p class="description">
       <%= link.description || '' %>
+   </p>
+   <p class="user">
+      Posted by: <%= link.user.email %>
    </p>
 </div>
