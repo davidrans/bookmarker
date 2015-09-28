@@ -39,6 +39,21 @@ Category.getByName = function(name) {
    });
 };
 
+Category.getByLinkId = function(link_id) {
+   var q =
+      'SELECT c.* ' +
+      'FROM `categories` c ' +
+      'JOIN `link_categories` lc USING (`category_id`) ' +
+      'WHERE lc.`link_id` = ?';
+
+   return db.query(q, link_id).then(function(rows) {
+      if (!rows.length) { return null; }
+
+      var cat = rows[0];
+      return new Category(cat.name, cat.category_id);
+   });
+};
+
 Category.getAll = function() {
    var q = 'SELECT * FROM `categories`';
 

@@ -20,8 +20,7 @@ app.get('/', isLoggedIn, function(req, res) {
 });
 
 app.post('/', function(req, res) {
-   var link = new Link(req.body.url, req.body.name, req.body.category);
-   link.save();
+   Link.create(req.body.url, req.body.name, req.body.category, req.user.id);
 });
 
 app.get('/signup/:code', function(req, res) {
@@ -35,7 +34,6 @@ app.get('/signup/:code', function(req, res) {
 app.post('/signup', function(req, res, next) {
    passport.authenticate('local-signup', function(err, user, info) {
       if (err) { return next(err); }
-      console.log(req);
       if (!user) { return res.redirect('/signup/' + req.body.code); }
 
       req.logIn(user, function(err) {
