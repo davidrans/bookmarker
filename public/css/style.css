@@ -68,26 +68,27 @@ a {
 }
 
 /* POST */
-.post {
+.link {
    border: 1px solid black;
+   margin-top: 20px;
    padding: 10px;
 }
 
-.post .title {
+.link .title {
    text-align: center;
    font-size: 20px;
 }
 
-.post .user {
+.link .user {
    text-align: right;
    margin: 0;
 }
 
-/* COMMENTS */
-.comments {
-   margin-bottom: 20px;
+.comments-link {
+   cursor: pointer;
 }
 
+/* COMMENTS */
 .comment {
    border: 1px solid black;
    border-top: 0;

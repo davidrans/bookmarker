@@ -1,15 +1,23 @@
 <div class="post">
-   <p class="title">
-      <a href="<%= link.url %>" target="_blank"><%= link.name %></a>
-   </p>
-   <p class="description">
-      <%= link.description || '' %>
-   </p>
-   <p class="user">
-      Posted by: <%= link.user.email %>
-   </p>
+   <div class="link">
+      <p class="title">
+         <a href="<%= link.url %>" target="_blank"><%= link.name %></a>
+      </p>
+      <p class="description">
+         <%= link.description || '' %>
+      </p>
+      <p class="user">
+         Posted by: <%= link.user.email %>
+      </p>
 
-   <span class="comments-link"><i class="fa fa-comment-o"></i></span>
+      <span class="comments-link">
+         <% if (link.comments.length) { %>
+            <i class="fa fa-comment"></i>
+         <% } else { %>
+            <i class="fa fa-comment-o"></i>
+         <% } %>
+      </span>
+   </div>
+
+   <% include comments %>
 </div>
-
-<% include comments %>

@@ -4,6 +4,10 @@ $(function() {
       $('.post-form').show();
    });
 
+   $('.comments-link').click(function() {
+      $(this).parent().siblings('.comments').toggle();
+   });
+
    $('.post-form').submit(function(e) {
       var data = $(this).serializeArray();
       $.post('/post', data);
