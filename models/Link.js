@@ -2,6 +2,7 @@ var Promise = require('promise');
 var db = require('../lib/db');
 var User = require('./User');
 var Category = require('./Category');
+var Comment = require('./Comment');
 
 var Link = function(url, name, user_id) {
    this.url = url;
@@ -46,14 +47,17 @@ Link.getAll = function() {
       rows.forEach(function(row) {
          var category = Category.getByLinkId(row.link_id);
          var user = User.getById(row.user_id);
+         var comments = Comment.getAll(row.link_id);
 
-         var link = Promise.all([category, user]).then(function(res) {
-               return {
-                  url: row.url,
-                  name: row.name,
-                  category: res[0],
-                  user: res[1]
-               };
+         var link = Promise.all([category, user, comments]).then(function(res) {
+            return {
+               id: row.link_id,
+               url: row.url,
+               name: row.name,
+               category: res[0],
+               user: res[1],
+               comments: res[2]
+            };
          });
          links.push(link);
       });

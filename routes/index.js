@@ -3,6 +3,7 @@ var db = require('../lib/db');
 var Link = require('../models/Link');
 var Category = require('../models/Category');
 var User = require('../models/User');
+var Comment = require('../models/Comment');
 
 module.exports = function(app, passport) {
 
@@ -19,8 +20,14 @@ app.get('/', isLoggedIn, function(req, res) {
    });
 });
 
-app.post('/', function(req, res) {
+app.post('/post', function(req, res) {
    Link.create(req.body.url, req.body.name, req.body.category, req.user.id);
+   res.sendStatus(200);
+});
+
+app.post('/comment', function(req, res) {
+   Comment.create(req.body.link_id, req.user.id, req.body.text);
+   res.sendStatus(200);
 });
 
 app.get('/signup/:code', function(req, res) {

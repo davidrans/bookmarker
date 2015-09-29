@@ -70,7 +70,6 @@ a {
 .post {
    border: 1px solid black;
    padding: 10px;
-   margin-bottom: 20px;
 }
 
 .post .title {
@@ -81,4 +80,23 @@ a {
 .post .user {
    text-align: right;
    margin: 0;
+}
+
+/* COMMENTS */
+.comments {
+   margin-bottom: 20px;
+}
+
+.comment {
+   border: 1px solid black;
+   border-top: 0;
+   padding: 5px;
+}
+
+.comment-user {
+   font-size: 10px;
+}
+
+.comment-form textarea {
+   width: 100%
 }

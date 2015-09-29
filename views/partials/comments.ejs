@@ -1,0 +1,14 @@
+<div class="comments">
+   <% link.comments.forEach(function(comment) { %>
+      <div class="comment">
+         <p class="comment-user"><%= comment.user.email %>:</p>
+         <p class="comment-text"><%= comment.text %></p>
+      </div>
+   <% }); %>
+
+   <form class="comment comment-form">
+      <textarea name="text" type="text"></textarea>
+      <input type="hidden" name="link_id" value="<%= link.id %>">
+      <input type="submit" value="Comment">
+   </form>
+</div>

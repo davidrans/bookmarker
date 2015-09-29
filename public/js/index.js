@@ -6,13 +6,20 @@ $(function() {
 
    $('.post-form').submit(function(e) {
       var data = $(this).serializeArray();
-      $.post('/', data);
+      $.post('/post', data);
       $(this).hide();
       $('.post-banner').show();
       e.preventDefault();
    });
 
-   $('#privacy').change(function(e) {
+   $('.comment-form').submit(function(e) {
+      var data = $(this).serializeArray();
+      $.post('/comment', data);
+      $(this).find('textarea').val('');
+      e.preventDefault();
+   });
+
+   /*$('#privacy').change(function(e) {
       if ($(this).val() === 'private') {
          $('#user-search').show();
       } else {
@@ -46,5 +53,5 @@ $(function() {
       var userList = $('#user-list');
       var listItem = $('<li>').text(email);
       userList.append(listItem);
-   }
+   }*/
 });
