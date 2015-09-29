@@ -1,4 +1,10 @@
 $(function() {
+   var socket = io();
+
+   socket.on('link saved', function(link) {
+      console.log(link);
+   });
+
    $('.post-banner').click(function() {
       $(this).hide();
       $('.post-form').show();

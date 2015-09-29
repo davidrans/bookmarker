@@ -24,14 +24,16 @@ Link.prototype.save = function() {
 Link.create = function(url, name, category_id, user_id) {
    var link = new Link(url, name, user_id);
 
-   link.save().then(function(result) {
+   return link.save().then(function(result) {
       var q_category =
          'INSERT INTO `link_categories` ' +
          '(`link_id`, `category_id`) ' +
          'VALUES(?, ?)';
       var p_category = [result.insertId, category_id];
 
-      return db.query(q_category, p_category);
+      return db.query(q_category, p_category).then(function() {
+         return link;
+      });
    });
 };
 
@@ -64,6 +66,10 @@ Link.getAll = function() {
 
       return Promise.all(links);
    });
+};
+
+Link.get = function(link_id) {
+   // TODO: get one link
 };
 
 Link.getByCategory = function(category_id) {

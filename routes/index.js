@@ -5,7 +5,14 @@ var Category = require('../models/Category');
 var User = require('../models/User');
 var Comment = require('../models/Comment');
 
-module.exports = function(app, passport) {
+module.exports = function(app, io, passport) {
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
 
 /* GET home page. */
 app.get('/', isLoggedIn, function(req, res) {
@@ -21,8 +28,13 @@ app.get('/', isLoggedIn, function(req, res) {
 });
 
 app.post('/post', function(req, res) {
-   Link.create(req.body.url, req.body.name, req.body.category, req.user.id);
+   var link = Link.create(req.body.url, req.body.name, req.body.category, req.user.id);
    res.sendStatus(200);
+
+   link.done(function(link) {
+      console.log('done');
+      io.emit('link saved', link);
+   });
 });
 
 app.post('/comment', function(req, res) {
