@@ -7,13 +7,6 @@ var Comment = require('../models/Comment');
 
 module.exports = function(app, io, passport) {
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
-
 /* GET home page. */
 app.get('/', isLoggedIn, function(req, res) {
    var links = Link.getAll();
@@ -37,9 +30,23 @@ app.post('/post', function(req, res) {
    });
 });
 
+app.get('/comment/:comment_id', function(req, res) {
+   var comment_id = req.params.comment_id;
+
+   Comment.getById(comment_id).done(function(comment) {
+      res.render('partials/comment.ejs', {
+         comment: comment
+      });
+   });
+});
+
 app.post('/comment', function(req, res) {
-   Comment.create(req.body.link_id, req.user.id, req.body.text);
+   var comment = Comment.create(req.body.link_id, req.user.id, req.body.text);
    res.sendStatus(200);
+
+   comment.done(function(comment_id) {
+      io.emit('comment saved', [req.body.link_id, comment_id]);
+   });
 });
 
 app.get('/signup/:code', function(req, res) {

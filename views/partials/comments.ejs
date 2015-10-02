@@ -1,9 +1,6 @@
 <div class="comments" style="display: none">
    <% link.comments.forEach(function(comment) { %>
-      <div class="comment">
-         <p class="comment-user"><%= comment.user.email %>:</p>
-         <p class="comment-text"><%= comment.text %></p>
-      </div>
+      <%- include comment %>
    <% }); %>
 
    <form class="comment comment-form">

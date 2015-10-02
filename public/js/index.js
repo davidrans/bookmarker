@@ -5,6 +5,17 @@ $(function() {
       console.log(link);
    });
 
+   socket.on('comment saved', function(ids) {
+      var link_id = ids[0];
+      var comment_id = ids[1];
+
+      var form = $('[data-linkid="' + link_id + '"] .comment-form');
+
+      $.get('/comment/' + comment_id, function(commentHTML) {
+         $(commentHTML).insertBefore(form);
+      });
+   });
+
    $('.post-banner').click(function() {
       $(this).hide();
       $('.post-form').show();

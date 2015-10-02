@@ -19,10 +19,34 @@ Comment.prototype.save = function() {
 };
 
 Comment.create = function(link_id, user_id, text) {
-   console.log(link_id, user_id, text);
    var comment = new Comment(link_id, user_id, text);
 
-   return comment.save()
+   return comment.save().then(function(result) {
+      return result.insertId;
+   });
+};
+
+Comment.get = function(row) {
+   var user = User.getById(row.user_id);
+
+   return user.then(function(user) {
+      return {
+         user: user,
+         text: row.text
+      };
+   });
+};
+
+Comment.getById = function(comment_id) {
+   var q =
+      'SELECT * FROM `comments` ' +
+      'WHERE `comment_id` = ?';
+
+   return db.query(q, comment_id).then(function(rows) {
+      if (!rows.length) { return null; }
+
+      return Comment.get(rows[0]);
+   });
 };
 
 Comment.getAll = function(link_id) {
@@ -36,14 +60,7 @@ Comment.getAll = function(link_id) {
       if (!rows.length) { return []; }
 
       var comments = rows.map(function(row) {
-         var user = User.getById(row.user_id);
-
-         return user.then(function(user) {
-            return {
-               user: user,
-               text: row.text
-            };
-         });
+         return Comment.get(row);
       });
 
       return Promise.all(comments);
