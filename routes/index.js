@@ -14,7 +14,32 @@ app.get('/', isLoggedIn, function(req, res) {
    Promise.all([links, categories]).done(function(result) {
       res.render('index', {
          links: result[0],
-         categories: result[1]
+         categories: result[1],
+         selectedCategory: 0
+      });
+   });
+});
+
+app.get('/category/:category', isLoggedIn, function(req, res) {
+   var links = Link.getAll();
+   var categories = Category.getAll();
+
+   Promise.all([links, categories]).done(function(result) {
+      links = result[0];
+      categories = result[1];
+
+      category = categories.filter(function(cat) {
+         return cat.name.toUpperCase() === req.params.category.toUpperCase();
+      }).shift();
+
+      links = links.filter(function(link) {
+         return link.category.id === category.id;
+      });
+
+      res.render('index', {
+         links: links,
+         categories: categories,
+         selectedCategory: category.id
       });
    });
 });

@@ -42,6 +42,16 @@ $(function() {
       e.preventDefault();
    });
 
+   $('.category-filter').change(function(ev) {
+      var category = $(this).find('option:selected').text();
+
+      if (category.toUpperCase() === 'ALL') {
+         window.location.replace('/');
+      } else {
+         window.location.replace('/category/' + category);
+      }
+   });
+
    function hookUpPostEvents(posts) {
       posts.find('.comments-link').click(function() {
          $(this).parent().siblings('.comments').toggle();

@@ -92,7 +92,16 @@ Link.getByCategory = function(category_id) {
       'JOIN `link_categories` USING (`link_id`) ' +
       'WHERE `category_id` = ?';
 
-   return db.query(q, category_id);
+   var links = [];
+   return db.query(q, category_id).then(function(rows) {
+
+      rows.forEach(function(row) {
+         var link = Link.get(row);
+         links.push(link);
+      });
+
+      return Promise.all(links);
+   });
 };
 
 module.exports = Link;

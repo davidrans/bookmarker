@@ -4,7 +4,7 @@
    <title>Gruten Flee</title>
    <% include partials/head %>
    <script>
-      requirejs(['./js/config'], function (config) {
+      requirejs(['/js/config.js'], function (config) {
           requirejs(['app/index']);
       });
    </script>
@@ -14,6 +14,18 @@
    <% include partials/header %>
 
    <% include partials/create-post %>
+
+   <div class="category-filter">
+      <span>Filter: </span>
+      <select name="category">
+         <option value="0">All</option>
+         <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.id %>"
+             <%= (selectedCategory === cat.id) ? 'selected' : '' %>
+             ><%= cat.name %></option>
+         <% }); %>
+      </select>
+   </div>
 
    <% links.forEach(function(link) { %>
       <% include partials/post %>
