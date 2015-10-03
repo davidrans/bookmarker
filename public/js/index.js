@@ -14,9 +14,14 @@ $(function() {
       var link_id = ids[0];
       var comment_id = ids[1];
 
-      var form = $('[data-linkid="' + link_id + '"] .comment-form');
+      var post = $('[data-linkid="' + link_id + '"]');
+
+      // Toggle comment icon on post.
+      post.find('.comments-link i').removeClass('fa-comment-o')
+                                   .addClass('fa-comment');
 
       $.get('/comment/' + comment_id, function(commentHTML) {
+         var form = post.find('.comment-form');
          $(commentHTML).insertBefore(form);
       });
    });
