@@ -20,13 +20,21 @@ app.get('/', isLoggedIn, function(req, res) {
    });
 });
 
-app.post('/post', function(req, res) {
-   var link = Link.create(req.body.url, req.body.name, req.body.category, req.user.id);
-   res.sendStatus(200);
+app.get('/post/:link_id', function(req, res) {
+   var link_id = req.params.link_id;
 
-   link.done(function(link) {
-      console.log('done');
-      io.emit('link saved', link);
+   Link.getById(link_id).done(function(link) {
+      res.render('partials/post.ejs', {
+         link: link
+      });
+   });
+});
+
+app.post('/post', function(req, res) {
+   Link.create(req.body.url, req.body.name, req.body.category, req.user.id).done(
+    function(link_id) {
+      res.sendStatus(200);
+      io.emit('link saved', link_id);
    });
 });
 
@@ -46,6 +54,16 @@ app.post('/comment', function(req, res) {
 
    comment.done(function(comment_id) {
       io.emit('comment saved', [req.body.link_id, comment_id]);
+   });
+});
+
+app.get('/comment/:comment_id', function(req, res) {
+   var comment_id = req.params.comment_id;
+
+   Comment.getById(comment_id).done(function(comment) {
+      res.render('partials/comment.ejs', {
+         comment: comment
+      });
    });
 });
 

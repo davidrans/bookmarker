@@ -25,15 +25,46 @@ Link.create = function(url, name, category_id, user_id) {
    var link = new Link(url, name, user_id);
 
    return link.save().then(function(result) {
+      var link_id = result.insertId;
       var q_category =
          'INSERT INTO `link_categories` ' +
          '(`link_id`, `category_id`) ' +
          'VALUES(?, ?)';
-      var p_category = [result.insertId, category_id];
+      var p_category = [link_id, category_id];
 
       return db.query(q_category, p_category).then(function() {
-         return link;
+         return link_id;
       });
+   });
+};
+
+Link.get = function(row) {
+   var category = Category.getByLinkId(row.link_id);
+   var user = User.getById(row.user_id);
+   var comments = Comment.getAll(row.link_id);
+
+   return Promise.all([category, user, comments]).then(function(res) {
+      return {
+         id: row.link_id,
+         url: row.url,
+         name: row.name,
+         category: res[0],
+         user: res[1],
+         comments: res[2]
+      };
+   });
+};
+
+Link.getById = function(link_id) {
+   var q =
+      'SELECT * FROM `links` ' +
+      'WHERE `link_id` = ?';
+
+   return db.query(q, link_id).then(function(rows) {
+      if (!rows.length) { return null; }
+
+      var row = rows[0];
+      return Link.get(row);
    });
 };
 
@@ -47,29 +78,12 @@ Link.getAll = function() {
       if (!rows.length) { return []; }
 
       rows.forEach(function(row) {
-         var category = Category.getByLinkId(row.link_id);
-         var user = User.getById(row.user_id);
-         var comments = Comment.getAll(row.link_id);
-
-         var link = Promise.all([category, user, comments]).then(function(res) {
-            return {
-               id: row.link_id,
-               url: row.url,
-               name: row.name,
-               category: res[0],
-               user: res[1],
-               comments: res[2]
-            };
-         });
+         var link = Link.get(row);
          links.push(link);
       });
 
       return Promise.all(links);
    });
-};
-
-Link.get = function(link_id) {
-   // TODO: get one link
 };
 
 Link.getByCategory = function(category_id) {

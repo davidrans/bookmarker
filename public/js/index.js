@@ -1,8 +1,13 @@
 $(function() {
+   hookUpPostEvents($('.post'));
+
    var socket = io();
 
-   socket.on('link saved', function(link) {
-      console.log(link);
+   socket.on('link saved', function(link_id) {
+      $.get('/post/' + link_id, function(postHTML) {
+         var post = $(postHTML).insertAfter($('.create-post'));
+         hookUpPostEvents(post);
+      });
    });
 
    socket.on('comment saved', function(ids) {
@@ -21,10 +26,6 @@ $(function() {
       $('.post-form').show();
    });
 
-   $('.comments-link').click(function() {
-      $(this).parent().siblings('.comments').toggle();
-   });
-
    $('.post-form').submit(function(e) {
       var data = $(this).serializeArray();
       $.post('/post', data);
@@ -33,12 +34,19 @@ $(function() {
       e.preventDefault();
    });
 
-   $('.comment-form').submit(function(e) {
-      var data = $(this).serializeArray();
-      $.post('/comment', data);
-      $(this).find('textarea').val('');
-      e.preventDefault();
-   });
+   function hookUpPostEvents(posts) {
+      posts.find('.comments-link').click(function() {
+         console.log(this);
+         $(this).parent().siblings('.comments').toggle();
+      });
+
+      posts.find('.comment-form').submit(function(e) {
+         var data = $(this).serializeArray();
+         $.post('/comment', data);
+         $(this).find('textarea').val('');
+         e.preventDefault();
+      });
+   }
 
    /*$('#privacy').change(function(e) {
       if ($(this).val() === 'private') {
