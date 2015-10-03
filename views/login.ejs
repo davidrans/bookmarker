@@ -3,22 +3,19 @@
 <head>
    <title>Login</title>
    <% include partials/head %>
+   <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
+   <% include partials/header %>
+
    <% if (message.length > 0) { %>
       <div class="alert alert-danger"><%= message %></div>
    <% } %>
-   <form action="/login" method="post">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" name="email">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-        </div>
 
-        <button type="submit" class="btn btn-warning btn-lg">Login</button>
-    </form>
+   <form action="/login" method="post">
+      <input type="email" placeholder="Email" name="email">
+      <input type="password" placeholder="Password" name="password">
+      <input type="submit" value="Login">
+   </form>
 </body>
 </html>

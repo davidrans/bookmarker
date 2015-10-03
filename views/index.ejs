@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Bookmarker</title>
+   <title>Gruten Flee</title>
    <% include partials/head %>
-   <script src="/js/index.js"></script>
+   <script>
+      requirejs(['./js/config'], function (config) {
+          requirejs(['app/index']);
+      });
+   </script>
+   <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
    <% include partials/header %>

@@ -1,3 +1,6 @@
+define(['jquery', 'socketio'],
+function($, io) {
+
 $(function() {
    var socket = io();
 
@@ -41,7 +44,6 @@ $(function() {
 
    function hookUpPostEvents(posts) {
       posts.find('.comments-link').click(function() {
-         console.log(this);
          $(this).parent().siblings('.comments').toggle();
       });
 
@@ -52,4 +54,6 @@ $(function() {
          e.preventDefault();
       });
    }
+});
+
 });

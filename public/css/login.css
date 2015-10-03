@@ -1,0 +1,14 @@
+input {
+   width: 80%;
+   margin: auto;
+   display: block;
+   margin-bottom: 20px;
+   border-radius: 4px;
+   padding: 10px;
+   font-size: 18px;
+}
+
+input[type=submit] {
+   padding: 0;
+   height: 40px;
+}
