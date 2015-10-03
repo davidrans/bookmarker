@@ -52,18 +52,6 @@ User.getById = function(id) {
    });
 };
 
-User.search = function(email) {
-   var q =
-      'SELECT * FROM `users` ' +
-      'WHERE `email` LIKE  ?';
-
-   return db.query(q, '%' + email + '%').then(function(rows) {
-      return rows.map(function(user) {
-         return new User(user.email, user.password, user.user_id);
-      });
-   });
-};
-
 User.generateHash = function(password) {
    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };

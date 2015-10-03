@@ -7,7 +7,6 @@ var Comment = require('../models/Comment');
 
 module.exports = function(app, io, passport) {
 
-/* GET home page. */
 app.get('/', isLoggedIn, function(req, res) {
    var links = Link.getAll();
    var categories = Category.getAll();
@@ -108,25 +107,6 @@ app.get('/logout', function(req, res) {
    req.logout();
    res.redirect('/');
 });
-
-/*app.get('/:category', function(req, res) {
-   Category.getByName(req.params.category).then(function(category) {
-      if (!category) { res.status(404).send('No such category'); }
-
-      Link.getByCategory(category.id).done(function(links) {
-         res.render('category', {
-            category: category,
-            links: links
-         });
-      });
-   });
-});
-
-app.get('/users/search/:email', function(req, res) {
-   User.search(req.params.email).then(function(users) {
-      res.send(users);
-   });
-});*/
 
 };
 
