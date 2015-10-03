@@ -24,7 +24,7 @@ User.prototype.save = function() {
    });
 };
 
-User.get = function(email) {
+User.getByEmail = function(email) {
    var q =
       'SELECT * FROM `users` ' +
       'WHERE `email` = ?';

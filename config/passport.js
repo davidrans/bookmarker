@@ -42,7 +42,7 @@ module.exports = function(passport) {
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.get(email).then(function(user) {
+        User.getByEmail(email).then(function(user) {
             // check to see if theres already a user with that email
             if (user) {
                 return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
@@ -77,7 +77,7 @@ module.exports = function(passport) {
         passReqToCallback : true
     },
     function(req, email, password, done) {
-        User.get(email).done(function(user) {
+        User.getByEmail(email).done(function(user) {
             // if no user is found, return the message
             if (!user) {
                 return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
