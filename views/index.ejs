@@ -20,14 +20,14 @@
       <select name="category">
          <option value="0">All</option>
          <% categories.forEach(function(cat) { %>
-            <option value="<%= cat.id %>"
-             <%= (selectedCategory === cat.id) ? 'selected' : '' %>
+            <option value="<%= cat.categoryid %>"
+             <%= (selectedCategory === cat.categoryid) ? 'selected' : '' %>
              ><%= cat.name %></option>
          <% }); %>
       </select>
    </div>
 
-   <% links.forEach(function(link) { %>
+   <% posts.forEach(function(post) { %>
       <% include partials/post %>
    <% }); %>
 </body>

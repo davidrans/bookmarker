@@ -1,19 +1,23 @@
 var Promise = require('promise');
 var db = require('../lib/db');
-var Link = require('../models/Link');
-var Category = require('../models/Category');
-var User = require('../models/User');
-var Comment = require('../models/Comment');
+var models = require('../models');
 
 module.exports = function(app, io, passport) {
 
 app.get('/', isLoggedIn, function(req, res) {
-   var links = Link.getAll();
-   var categories = Category.getAll();
+   var posts = models.Post.findAll({
+      order: [['postid', 'DESC']],
+      include: [
+         models.Category,
+         models.User,
+         {model: models.Comment, include: models.User}
+      ]
+   });
+   var categories = models.Category.findAll();
 
-   Promise.all([links, categories]).done(function(result) {
+   Promise.all([posts, categories]).done(function(result) {
       res.render('index', {
-         links: result[0],
+         posts: result[0],
          categories: result[1],
          selectedCategory: 0
       });
@@ -21,51 +25,63 @@ app.get('/', isLoggedIn, function(req, res) {
 });
 
 app.get('/category/:category', isLoggedIn, function(req, res) {
-   var links = Link.getAll();
-   var categories = Category.getAll();
-
-   Promise.all([links, categories]).done(function(result) {
-      links = result[0];
-      categories = result[1];
-
-      category = categories.filter(function(cat) {
-         return cat.name.toUpperCase() === req.params.category.toUpperCase();
-      }).shift();
-
-      links = links.filter(function(link) {
-         return link.category.id === category.id;
+   models.Category.findOne({where: {
+      name: req.params.category}
+   }).done(function(category) {
+      var categoryid = category.categoryid;
+      var posts = models.Post.findAll({
+         where: {categoryid: categoryid},
+         include: [
+            models.Category,
+            models.User,
+            {model: models.Comment, include: models.User}
+         ]
       });
+      var categories = models.Category.findAll();
 
-      res.render('index', {
-         links: links,
-         categories: categories,
-         selectedCategory: category.id
+      Promise.all([posts, categories]).done(function(result) {
+         posts = result[0];
+         categories = result[1];
+
+         res.render('index', {
+            posts: posts,
+            categories: categories,
+            selectedCategory: categoryid
+         });
       });
    });
 });
 
-app.get('/post/:link_id', function(req, res) {
-   var link_id = req.params.link_id;
+app.get('/post/:postid', function(req, res) {
+   var postid = req.params.postid;
 
-   Link.getById(link_id).done(function(link) {
+   models.Post.findById(postid, {
+      include: [models.Category, models.User, models.Comment]
+   }).done(function(post) {
       res.render('partials/post.ejs', {
-         link: link
+         post: post
       });
    });
 });
 
 app.post('/post', function(req, res) {
-   Link.create(req.body.url, req.body.name, req.body.category, req.user.id).done(
-    function(link_id) {
+   models.Post.create({
+      url: req.body.url,
+      title: req.body.name,
+      categoryid: req.body.category,
+      userid: req.user.userid
+   }).done(function(post) {
       res.sendStatus(200);
-      io.emit('link saved', link_id);
+      io.emit('post saved', post.postid);
    });
 });
 
-app.get('/comment/:comment_id', function(req, res) {
-   var comment_id = req.params.comment_id;
+app.get('/comment/:commentid', function(req, res) {
+   var commentid = req.params.commentid;
 
-   Comment.getById(comment_id).done(function(comment) {
+   models.Comment.findById(commentid, {
+      include: [models.User]
+   }).done(function(comment) {
       res.render('partials/comment.ejs', {
          comment: comment
       });
@@ -73,18 +89,22 @@ app.get('/comment/:comment_id', function(req, res) {
 });
 
 app.post('/comment', function(req, res) {
-   var comment = Comment.create(req.body.link_id, req.user.id, req.body.text);
-   res.sendStatus(200);
+   var comment = models.Comment.create({
+      postid: req.body.postid,
+      userid: req.user.userid,
+      text: req.body.text
+   });
 
-   comment.done(function(comment_id) {
-      io.emit('comment saved', [req.body.link_id, comment_id]);
+   comment.done(function(comment) {
+      res.sendStatus(200);
+      io.emit('comment saved', [comment.postid, comment.commentid]);
    });
 });
 
-app.get('/comment/:comment_id', function(req, res) {
-   var comment_id = req.params.comment_id;
+app.get('/comment/:commentid', function(req, res) {
+   var commentid = req.params.commentid;
 
-   Comment.getById(comment_id).done(function(comment) {
+   models.Comment.findById(commentid).done(function(comment) {
       res.render('partials/comment.ejs', {
          comment: comment
       });
@@ -124,7 +144,7 @@ app.post('/login', passport.authenticate('local-login', {
 
 app.get('/profile', isLoggedIn, function(req, res) {
    res.render('profile.ejs', {
-      user : req.user // get the user out of session and pass to template
+      user : req.user
    });
 });
 

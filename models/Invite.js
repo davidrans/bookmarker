@@ -1,35 +1,21 @@
-var db = require('../lib/db');
+"use strict";
 
-var Invite = function(email, code) {
-   this.email = email;
-   this.code = code;
-};
-
-Invite.prototype.save = function() {
-   var q =
-      'REPLACE INTO `invites` ' +
-      'SET `email` = ?, `code` = ?';
-
-   return db.query(q, [this.email, Invite.generateCode()]);
-};
-
-Invite.exists = function(email, code) {
-   var q =
-      'SELECT * FROM `invites` ' +
-      'WHERE `email` = ? AND `code` = ?';
-
-   return db.query(q, [email, code]).then(function(rows) {
-      if (!rows.length) { return false; }
-
-      return true;
+module.exports = function(sequelize, DataTypes) {
+   var Invite = sequelize.define('Invite', {
+      inviteid: {
+         type: DataTypes.INTEGER(10).UNSIGNED,
+         autoIncrement: true,
+         primaryKey: true
+      },
+      email: {
+         type: DataTypes.STRING(255),
+         allowNull: false
+      },
+      code: {
+         type: DataTypes.STRING(255),
+         allowNull: false
+      }
    });
-};
 
-Invite.generateCode = function() {
-   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-      return v.toString(16);
-   });
+   return Invite;
 };
-
-module.exports = Invite;

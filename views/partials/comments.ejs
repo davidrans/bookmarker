@@ -1,11 +1,11 @@
 <div class="comments" style="display: none">
-   <% link.comments.forEach(function(comment) { %>
+   <% post.Comments.forEach(function(comment) { %>
       <%- include comment %>
    <% }); %>
 
    <form class="comment comment-form">
       <textarea name="text" type="text"></textarea>
-      <input type="hidden" name="link_id" value="<%= link.id %>">
+      <input type="hidden" name="postid" value="<%= post.postid %>">
       <input type="submit" value="Comment">
    </form>
 </div>

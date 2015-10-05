@@ -1,17 +1,17 @@
-<div data-linkid="<%= link.id %>" class="post">
+<div data-postid="<%= post.postid %>" class="post">
    <div class="link">
       <p class="title">
-         <a href="<%= link.url %>" target="_blank"><%= link.name %></a>
+         <a href="<%= post.url %>" target="_blank"><%= post.title %></a>
       </p>
       <p class="description">
-         <%= link.description || '' %>
+         <%= post.description || '' %>
       </p>
       <p class="user">
-         Posted by: <%= link.user.email %>
+         Posted by: <%= post.User.email %>
       </p>
 
       <span class="comments-link">
-         <% if (link.comments.length) { %>
+         <% if (post.Comments.length) { %>
             <i class="fa fa-comment"></i>
          <% } else { %>
             <i class="fa fa-comment-o"></i>

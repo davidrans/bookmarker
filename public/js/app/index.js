@@ -6,18 +6,18 @@ $(function() {
 
    hookUpPostEvents($('.post'));
 
-   socket.on('link saved', function(link_id) {
-      $.get('/post/' + link_id, function(postHTML) {
+   socket.on('post saved', function(postid) {
+      $.get('/post/' + postid, function(postHTML) {
          var post = $(postHTML).insertAfter($('.create-post'));
          hookUpPostEvents(post);
       });
    });
 
    socket.on('comment saved', function(ids) {
-      var link_id = ids[0];
+      var postid = ids[0];
       var comment_id = ids[1];
 
-      var post = $('[data-linkid="' + link_id + '"]');
+      var post = $('[data-postid="' + postid + '"]');
 
       // Toggle comment icon on post.
       post.find('.comments-link i').removeClass('fa-comment-o')

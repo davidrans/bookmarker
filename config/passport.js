@@ -1,8 +1,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
+var UserLib   = require('../lib/UserLib');
 
-// load up the user model
-var User            = require('../models/User');
-var Invite          = require('../models/Invite');
+var models = require('../models');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -15,12 +14,12 @@ module.exports = function(passport) {
 
    // used to serialize the user for the session
    passport.serializeUser(function(user, done) {
-      done(null, user.id);
+      done(null, user.userid);
    });
 
    // used to deserialize the user
-   passport.deserializeUser(function(id, done) {
-      User.getById(id).done(function(user) {
+   passport.deserializeUser(function(userid, done) {
+      models.User.findById(userid).done(function(user) {
          done(null, user);
       }, function(err) {
          done(err);
@@ -34,7 +33,10 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
-        var inviteExists = Invite.exists(req.body.email, req.body.code);
+       var inviteExists = models.Invite.findOne({
+          email: req.body.email,
+          code: req.body.code
+       });
 
         // asynchronous
         // User.findOne wont fire unless data is sent back
@@ -42,23 +44,23 @@ module.exports = function(passport) {
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.getByEmail(email).then(function(user) {
+        models.User.findOne({email: email}).done(function(user) {
             // check to see if theres already a user with that email
             if (user) {
                 return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
             } else {
-                // if there is no user with that email
-                // create the user
-                var newUser = new User(email, User.generateHash(password));
-
-                inviteExists.done(function(exists) {
-                   if (!exists) {
+                inviteExists.done(function(invite) {
+                   if (!invite) {
                       return done(null, false, req.flash('signupMessage', 'That email was not invited.'));
                    }
 
-                   // save the user
-                   newUser.save().done(function() {
-                       return done(null, newUser);
+                   // if there is no user with that email
+                   // create the user
+                   models.User.create({
+                      email: email,
+                      password: UserLib.generateHash(password)
+                   }).done(function(user) {
+                       return done(null, user);
                    }, function(err) {
                        throw err;
                    });
@@ -77,14 +79,14 @@ module.exports = function(passport) {
         passReqToCallback : true
     },
     function(req, email, password, done) {
-        User.getByEmail(email).done(function(user) {
+       models.User.findOne({
+          email: email,
+          password: password
+       }).done(function(user) {
             // if no user is found, return the message
             if (!user) {
-                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
-            }
-
-            if (!user.validPassword(password)) {
-                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+               // req.flash is the way to set flashdata using connect-flash
+               return done(null, false, req.flash('loginMessage', 'Invalid credentials'));
             }
 
             // all is well, return successful user

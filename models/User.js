@@ -1,59 +1,28 @@
-var db     = require('../lib/db'),
-    bcrypt = require('bcrypt-nodejs');
+"use strict";
 
-var User = function(email, password, id) {
-   this.email = email;
-   this.password = password;
-   this.id = id || undefined;
-};
+var bcrypt = require('bcrypt-nodejs');
+var UserLib = require('../lib/UserLib');
 
-User.prototype.validPassword = function(password) {
-   return bcrypt.compareSync(password, this.password);
-};
+module.exports = function(sequelize, DataTypes) {
+   var User = sequelize.define('User', {
+      userid: {
+         type: DataTypes.INTEGER(10).UNSIGNED,
+         autoIncrement: true,
+         primaryKey: true,
+      },
+      email: {
+         type: DataTypes.STRING(255),
+         allowNull: false
+      },
+      password: {
+         type: DataTypes.STRING(255),
+         allowNull: false,
 
-User.prototype.save = function() {
-   var self = this;
-   var q =
-      'INSERT INTO `users` ' +
-      '(`email`, `password`) ' +
-      'VALUES (?, ?)';
-
-   return db.query(q, [this.email, this.password]).then(function(result) {
-      self.id = result.insertId;
-      return result;
+         set: function(val) {
+            this.setDataValue('password', UserLib.generateHash(val));
+         }
+      }
    });
+
+   return User;
 };
-
-User.getByEmail = function(email) {
-   var q =
-      'SELECT * FROM `users` ' +
-      'WHERE `email` = ?';
-
-   return db.query(q, email).then(function(rows) {
-      if (!rows.length) { return null; }
-
-      var user = rows[0];
-
-      return new User(user.email, user.password, user.user_id);
-   });
-};
-
-User.getById = function(id) {
-   var q =
-      'SELECT * FROM `users` ' +
-      'WHERE `user_id` = ?';
-
-   return db.query(q, id).then(function(rows) {
-      if (!rows.length) { return null; }
-
-      var user = rows[0];
-
-      return new User(user.email, user.password, user.user_id);
-   });
-};
-
-User.generateHash = function(password) {
-   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
-
-module.exports = User;
