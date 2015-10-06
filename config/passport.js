@@ -58,7 +58,7 @@ module.exports = function(passport) {
                    // create the user
                    models.User.create({
                       email: email,
-                      password: UserLib.generateHash(password)
+                      password: password
                    }).done(function(user) {
                        return done(null, user);
                    }, function(err) {
@@ -79,12 +79,14 @@ module.exports = function(passport) {
         passReqToCallback : true
     },
     function(req, email, password, done) {
-       models.User.findOne({
-          email: email,
-          password: password
-       }).done(function(user) {
-            // if no user is found, return the message
+       models.User.findOne({where: {
+          email: email
+       }}).done(function(user) {
             if (!user) {
+               return done(null, false, req.flash('loginMessage', 'That email is not registered.'));
+            }
+
+            if (!UserLib.comparePasswords(password, user.password)) {
                // req.flash is the way to set flashdata using connect-flash
                return done(null, false, req.flash('loginMessage', 'Invalid credentials'));
             }
