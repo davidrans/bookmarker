@@ -1,16 +1,14 @@
-var LocalStrategy   = require('passport-local').Strategy;
-var UserLib   = require('../lib/UserLib');
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+// load up the user model
 var models = require('../models');
+var User = models.User;
+var Invite = models.Invite;
 
-// expose this function to our app using module.exports
+// load the auth variables
+var configAuth = require('./auth');
+
 module.exports = function(passport) {
-
-    // =========================================================================
-    // passport session setup ==================================================
-    // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
 
    // used to serialize the user for the session
    passport.serializeUser(function(user, done) {
@@ -19,83 +17,57 @@ module.exports = function(passport) {
 
    // used to deserialize the user
    passport.deserializeUser(function(userid, done) {
-      models.User.findById(userid).done(function(user) {
+      User.findById(userid).done(function(user) {
          done(null, user);
       }, function(err) {
          done(err);
       });
    });
 
-    passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-    function(req, email, password, done) {
-       var inviteExists = models.Invite.findOne({
-          email: req.body.email,
-          code: req.body.code
-       });
+   // =========================================================================
+   // GOOGLE ==================================================================
+   // =========================================================================
+   passport.use(new GoogleStrategy({
 
-        // asynchronous
-        // User.findOne wont fire unless data is sent back
-        process.nextTick(function() {
+      clientID        : configAuth.googleAuth.clientID,
+      clientSecret    : configAuth.googleAuth.clientSecret,
+      callbackURL     : configAuth.googleAuth.callbackURL,
 
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
-        models.User.findOne({email: email}).done(function(user) {
-            // check to see if theres already a user with that email
+   },
+   function(token, refreshToken, profile, done) {
+      // make the code asynchronous
+      // User.findOne won't fire until we have all our data back from Google
+      process.nextTick(function() {
+         // Use first email.
+         var email = profile.emails[0].value;
+
+         Invite.findOne({email: email}).done(function(invite) {
+            if (!invite) {
+               return done(null, false);
+            }
+         });
+
+         // try to find the user based on their google id
+         User.findOne({where: {'googleid' : profile.id}}).done(function(user) {
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+               // If a user is found, log them in.
+               return done(null, user);
             } else {
-                inviteExists.done(function(invite) {
-                   if (!invite) {
-                      return done(null, false, req.flash('signupMessage', 'That email was not invited.'));
-                   }
-
-                   // if there is no user with that email
-                   // create the user
-                   models.User.create({
-                      email: email,
-                      password: password
-                   }).done(function(user) {
-                       return done(null, user);
-                   }, function(err) {
-                       throw err;
-                   });
-                });
+               // If the user isn't in our database, create a new user.
+               User.create({
+                  email: email,
+                  googleid: profile.id,
+                  google_token: token,
+                  name: profile.displayName
+               }).done(function(user) {
+                  return done(null, user);
+               }, function(err) {
+                  throw err;
+               });
             }
+          });
+      });
 
-        });    
+   }));
 
-        });
-
-    }));
-
-    passport.use('local-login', new LocalStrategy({
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true
-    },
-    function(req, email, password, done) {
-       models.User.findOne({where: {
-          email: email
-       }}).done(function(user) {
-            if (!user) {
-               return done(null, false, req.flash('loginMessage', 'That email is not registered.'));
-            }
-
-            if (!UserLib.comparePasswords(password, user.password)) {
-               // req.flash is the way to set flashdata using connect-flash
-               return done(null, false, req.flash('loginMessage', 'Invalid credentials'));
-            }
-
-            // all is well, return successful user
-            return done(null, user);
-        }, function(err) {
-            return done(err);
-        });
-
-    }));
 };

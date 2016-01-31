@@ -111,36 +111,10 @@ app.get('/comment/:commentid', function(req, res) {
    });
 });
 
-app.get('/signup/:code', function(req, res) {
-   // render the page and pass in any flash data if it exists
-   res.render('signup.ejs', {
-      code: req.params.code,
-      message: req.flash('signupMessage')
-   });
-});
-
-app.post('/signup', function(req, res, next) {
-   passport.authenticate('local-signup', function(err, user, info) {
-      if (err) { return next(err); }
-      if (!user) { return res.redirect('/signup/' + req.body.code); }
-
-      req.logIn(user, function(err) {
-         if (err) { return next(err); }
-         return res.redirect('/');
-      });
-   })(req, res, next);
-});
-
 app.get('/login', function(req, res) {
    // render the page and pass in any flash data if it exists
    res.render('login.ejs', { message: req.flash('loginMessage') });
 });
-
-app.post('/login', passport.authenticate('local-login', {
-   successRedirect : '/',
-   failureRedirect : '/login',
-   failureFlash : true
-}));
 
 app.get('/profile', isLoggedIn, function(req, res) {
    res.render('profile.ejs', {
@@ -152,6 +126,22 @@ app.get('/logout', function(req, res) {
    req.logout();
    res.redirect('/');
 });
+
+// =====================================
+// GOOGLE ROUTES =======================
+// =====================================
+// send to google to do the authentication
+// profile gets us their basic information including their name
+// email gets their emails
+app.get('/auth/google', passport.authenticate('google', {
+   scope : ['profile', 'email']
+}));
+
+// the callback after google has authenticated the user
+app.get('/auth/google/callback', passport.authenticate('google', {
+   successRedirect : '/',
+   failureRedirect : '/login'
+}));
 
 };
 

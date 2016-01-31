@@ -1,8 +1,5 @@
 "use strict";
 
-var bcrypt = require('bcrypt-nodejs');
-var UserLib = require('../lib/UserLib');
-
 module.exports = function(sequelize, DataTypes) {
    var User = sequelize.define('User', {
       userid: {
@@ -14,13 +11,17 @@ module.exports = function(sequelize, DataTypes) {
          type: DataTypes.STRING(255),
          allowNull: false
       },
-      password: {
+      googleid: {
          type: DataTypes.STRING(255),
-         allowNull: false,
-
-         set: function(val) {
-            this.setDataValue('password', UserLib.generateHash(val));
-         }
+         allowNull: false
+      },
+      google_token: {
+         type: DataTypes.STRING(255),
+         allowNull: false
+      },
+      name: {
+         type: DataTypes.STRING(255),
+         allowNull: false
       }
    });
 

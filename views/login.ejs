@@ -12,10 +12,12 @@
       <div class="alert alert-danger"><%= message %></div>
    <% } %>
 
-   <form action="/login" method="post">
-      <input type="email" placeholder="Email" name="email">
-      <input type="password" placeholder="Password" name="password">
-      <input type="submit" value="Login">
-   </form>
+   <h1><span class="fa fa-lock"></span> Login</h1>
+   <p>
+      <span>Login or Register with:</span>
+      <a href="/auth/google" class="btn btn-danger">
+         <span class="fa fa-google"></span>oogle
+      </a>
+   </p>
 </body>
 </html>
