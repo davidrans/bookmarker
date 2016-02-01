@@ -87,6 +87,6 @@ mailin.start({
    disableWebhook: true // Disable the webhook posting.
 });
 
-require('./controllers/incoming_mail')(mailin);
+require('./controllers/incoming_mail')(mailin, io);
 
 module.exports = app;

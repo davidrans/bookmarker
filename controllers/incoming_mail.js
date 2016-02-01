@@ -1,7 +1,7 @@
 var Post = require('../models').Post;
 var User = require('../models').User;
 
-module.exports = function(mailin) {
+module.exports = function(mailin, io) {
    /* Event emitted after a message was received and parsed. */
    mailin.on('message', function (connection, data, content) {
       var email = data.from[0].address;
