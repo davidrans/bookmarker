@@ -9,14 +9,14 @@ module.exports = function(mailin) {
       var title = data.subject || url;
 
       if (!url || !email) {
-         res.sendStatus(400);
+         return;
       }
 
       var user = User.findOne({
          where: {email: email}
       }).done(function(user) {
          if (!user) {
-            return res.sendStatus(403);
+            return;
          }
 
          Post.create({
@@ -24,7 +24,6 @@ module.exports = function(mailin) {
             title: title,
             userid: user.userid
          }).done(function(post) {
-            res.sendStatus(200);
             io.emit('post saved', post.postid);
          });
       });
