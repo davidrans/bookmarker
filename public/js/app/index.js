@@ -8,7 +8,7 @@ $(function() {
 
    socket.on('post saved', function(postid) {
       $.get('/post/' + postid, function(postHTML) {
-         var post = $(postHTML).insertAfter($('.create-post'));
+         var post = $(postHTML).insertAfter($('.category-filter'));
          hookUpPostEvents(post);
       });
    });
