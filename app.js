@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var debug = require('debug')('bookmark');
+var mailin = require('mailin');
 
 var morgan = require('morgan');
 var session = require('express-session');
@@ -80,5 +81,12 @@ db.sync().then(function() {
       debug('Express server listening on port ' + server.address().port);
    });
 });
+
+mailin.start({
+   port: 25,
+   disableWebhook: true // Disable the webhook posting.
+});
+
+require('./controllers/incoming_mail')(mailin);
 
 module.exports = app;
