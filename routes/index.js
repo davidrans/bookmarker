@@ -127,6 +127,29 @@ app.get('/logout', function(req, res) {
    res.redirect('/');
 });
 
+app.get('/top_five', function(req, res) {
+   models.Post.findAll({
+      order: [['postid', 'DESC']],
+      limit: 5,
+      include: [
+         models.User,
+         {model: models.Comment, include: models.User}
+      ]
+   }).done(function(posts) {
+      res.status(200).json({
+         posts: posts.map(function(post) {
+            return {
+               postid: post.postid,
+               url: post.url,
+               title: post.title,
+               user: post.User.name,
+               comment_count: post.Comments.length
+            };
+         })
+      })
+   });
+});
+
 // =====================================
 // GOOGLE ROUTES =======================
 // =====================================
